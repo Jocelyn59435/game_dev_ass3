@@ -32,6 +32,8 @@ public class LevelGenerator : MonoBehaviour
     public AnimatedTile powerPellet;
     public AnimatedTile tJunction;
 
+    //Place all tiles first, then check when and how to rotate
+
     public void PlaceOutsideCorner(int row, int col)
     {
         levelMap.SetTile(new Vector3Int(col - 14, 15 - row, 0), outsideCorner); // left top
@@ -112,8 +114,8 @@ public class LevelGenerator : MonoBehaviour
         levelMap.SetTile(new Vector3Int(13 - col, row - 13, 0), insideCorner);
         levelMap.SetTile(new Vector3Int(col - 14, row - 13, 0), insideCorner);
         // left & down                        4
-        // 4 3   3 3   4 3   3   4 4 3 4    4 3
-        //   4     4     3   4       4        4
+        // 4 3   3 3   4 3   3   4 4 3 4    4 3   3 3
+        //   4     4     3   4       4        4     3
         //                                    4
         if (((row + 1 < 15 && levelMapArray[row + 1, col] == 4) && (col - 1 >= 0 && levelMapArray[row, col - 1] == 4) &&
              (col + 1 < 14 && levelMapArray[row, col + 1] != 4)) ||
@@ -133,7 +135,9 @@ public class LevelGenerator : MonoBehaviour
 
             ((row + 1 < 15 && levelMapArray[row + 1, col] == 4) && (row + 2 < 15 && levelMapArray[row + 2, col] == 4) &&
              (col - 1 >= 0 && levelMapArray[row, col - 1] == 4) &&
-             (row - 1 >= 0 && levelMapArray[row - 1, col] == 4))
+             (row - 1 >= 0 && levelMapArray[row - 1, col] == 4)) ||
+
+            ((row + 1 < 15 && levelMapArray[row + 1, col] == 3) && (col - 1 >= 0 && levelMapArray[row, col - 1] == 3))
             )
         {
             Matrix4x4 matrixLeftTop = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(0f, 0f, 270f), Vector3.one);
@@ -144,10 +148,10 @@ public class LevelGenerator : MonoBehaviour
             levelMap.SetTransformMatrix(new Vector3Int(col - 14, row - 13, 0), matrixLeftBottom);
         }
 
-
-        // left & up
-        //   4     4     3   4      4
-        // 4 3   3 3   4 3   3  4 4 3 4
+        //                                  4
+        // left & up                        4
+        //   4     4     3   4      4     4 3     3 
+        // 4 3   3 3   4 3   3  4 4 3 4     4   3 3
         else if (((row - 1 >= 0 && levelMapArray[row - 1, col] == 4) && (col - 1 >= 0 && levelMapArray[row, col - 1] == 4) &&
              (col + 1 < 14 && levelMapArray[row, col + 1] != 4)) ||
 
@@ -161,8 +165,12 @@ public class LevelGenerator : MonoBehaviour
              (col - 1 < 0)) ||
 
             ((row - 1 >= 0 && levelMapArray[row - 1, col] == 4) && (col - 1 >= 0 && levelMapArray[row, col - 1] == 4) &&
-             (col - 2 >= 0 && levelMapArray[row, col - 2] == 4) &&
-             (col + 1 < 14 && levelMapArray[row, col + 1] == 4))
+             (col - 2 >= 0 && levelMapArray[row, col - 2] == 4) && (col + 1 < 14 && levelMapArray[row, col + 1] == 4)) ||
+
+            ((row - 1 >= 0 && levelMapArray[row - 1, col] == 4) && (col - 1 >= 0 && levelMapArray[row, col - 1] == 4) &&
+             (row + 1 < 15 && levelMapArray[row + 1, col] == 4) && (row - 2 >= 0 && levelMapArray[row - 2, col] == 4)) ||
+
+            ((row - 1 >= 0 && levelMapArray[row - 1, col] == 3) && (col - 1 >= 0 && levelMapArray[row, col - 1] == 3))
             )
         {
             Matrix4x4 matrixLeftTop = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(0f, 0f, 180f), Vector3.one);
@@ -173,9 +181,10 @@ public class LevelGenerator : MonoBehaviour
             levelMap.SetTransformMatrix(new Vector3Int(col - 14, row - 13, 0), matrixLeftBottom);
         }
 
-        // right & up
-        // 4     4     3      4      4
-        // 3 4   3 3   3 4    3    4 3 4 4
+        //                                   4
+        // right & up                        4
+        // 4     4     3      4      4       3 4    3
+        // 3 4   3 3   3 4    3    4 3 4 4   4      3 3
         else if (((row - 1 >= 0 && levelMapArray[row - 1, col] == 4) && (col + 1 < 14 && levelMapArray[row, col + 1] == 4) &&
              (col - 1 >= 0 && levelMapArray[row, col - 1] != 4)) ||
 
@@ -189,7 +198,12 @@ public class LevelGenerator : MonoBehaviour
              (col + 1 == 14)) ||
 
             ((row - 1 >= 0 && levelMapArray[row - 1, col] == 4) && (col + 1 < 14 && levelMapArray[row, col + 1] == 4) &&
-            (col + 2 < 14 && levelMapArray[row, col + 2] == 4) && (col - 1 >= 0 && levelMapArray[row, col - 1] == 4))
+            (col + 2 < 14 && levelMapArray[row, col + 2] == 4) && (col - 1 >= 0 && levelMapArray[row, col - 1] == 4)) ||
+
+            ((row - 1 >= 0 && levelMapArray[row - 1, col] == 4) && (col + 1 < 14 && levelMapArray[row, col + 1] == 4) &&
+             (row + 1 < 15 && levelMapArray[row + 1, col] == 4) && (row - 2 >= 0 && levelMapArray[row - 2, col] == 4)) ||
+
+            ((row - 1 >= 0 && levelMapArray[row - 1, col] == 3) && (col + 1 < 14 && levelMapArray[row, col + 1] == 3))
             )
         {
             Matrix4x4 matrixLeftTop = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(0f, 0f, 90f), Vector3.one);
@@ -240,6 +254,55 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
+    public void PlaceTJuntion(int row, int col)
+    {
+        //                   4   4
+        //  2  7   7  2   2  7   7  2
+        //     4   4
+        levelMap.SetTile(new Vector3Int(col - 14, 15 - row, 0), tJunction);
+        levelMap.SetTile(new Vector3Int(13 - col, 15 - row, 0), tJunction); // right top
+        levelMap.SetTile(new Vector3Int(13 - col, row - 13, 0), tJunction); // right bottom
+        levelMap.SetTile(new Vector3Int(col - 14, row - 13, 0), tJunction); // left bottom
+        if ((row + 1 < 15 && levelMapArray[row + 1, col] == 4) && (col - 1 >= 0 && levelMapArray[row, col - 1] == 2))
+        {
+            Matrix4x4 matrixRightTop = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(0f, 180f, 0f), Vector3.one);
+            levelMap.SetTransformMatrix(new Vector3Int(13 - col, 15 - row, 0), matrixRightTop);
+            Matrix4x4 matrixRightBottom = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(0f, 0f, 180f), Vector3.one);
+            levelMap.SetTransformMatrix(new Vector3Int(13 - col, row - 13, 0), matrixRightBottom);
+            Matrix4x4 matrixLeftBottom = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(180f, 0f, 0f), Vector3.one);
+            levelMap.SetTransformMatrix(new Vector3Int(col - 14, row - 13, 0), matrixLeftBottom);
+        }
+        if ((row + 1 < 15 && levelMapArray[row + 1, col] == 4) && (col + 1 < 14 && levelMapArray[row, col - 1] == 2))
+        {
+            Matrix4x4 matrixLeftTop = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(0f, 180f, 0f), Vector3.one);
+            levelMap.SetTransformMatrix(new Vector3Int(col - 14, 15 - row, 0), matrixLeftTop);
+            Matrix4x4 matrixRightBottom = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(180f, 0f, 0f), Vector3.one);
+            levelMap.SetTransformMatrix(new Vector3Int(13 - col, row - 13, 0), matrixRightBottom);
+            Matrix4x4 matrixLeftBottom = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(0f, 0f, 180f), Vector3.one);
+            levelMap.SetTransformMatrix(new Vector3Int(col - 14, row - 13, 0), matrixLeftBottom);
+        }
+        if ((row - 1 >= 0 && levelMapArray[row - 1, col] == 4) && (col - 1 >= 0 && levelMapArray[row, col - 1] == 2))
+        {
+            Matrix4x4 matrixLeftTop = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(180f, 0f, 0f), Vector3.one);
+            levelMap.SetTransformMatrix(new Vector3Int(col - 14, 15 - row, 0), matrixLeftTop);
+            Matrix4x4 matrixRightTop = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(0f, 0f, 180f), Vector3.one);
+            levelMap.SetTransformMatrix(new Vector3Int(13 - col, 15 - row, 0), matrixRightTop);
+            Matrix4x4 matrixRightBottom = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(0f, 180f, 0f), Vector3.one);
+            levelMap.SetTransformMatrix(new Vector3Int(13 - col, row - 13, 0), matrixRightBottom);
+            
+        }
+        if ((row - 1 >= 0 && levelMapArray[row - 1, col] == 4) && (col + 1 < 14 && levelMapArray[row, col + 1] == 2))
+        {
+            Matrix4x4 matrixLeftTop = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(0f, 0f, 180f), Vector3.one);
+            levelMap.SetTransformMatrix(new Vector3Int(col - 14, 15 - row, 0), matrixLeftTop);
+            Matrix4x4 matrixRightTop = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(180f, 0f, 0f), Vector3.one);
+            levelMap.SetTransformMatrix(new Vector3Int(13 - col, 15 - row, 0), matrixRightTop);
+            Matrix4x4 matrixLeftBottom = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(0f, 180f, 0f), Vector3.one);
+            levelMap.SetTransformMatrix(new Vector3Int(col - 14, row - 13, 0), matrixLeftBottom);
+        }
+       
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -268,16 +331,7 @@ public class LevelGenerator : MonoBehaviour
                         levelMap.SetTile(new Vector3Int(j - 14, i - 13, 0), powerPellet);
                         break;
                     case 7:
-                        levelMap.SetTile(new Vector3Int(j - 14, 15 - i, 0), tJunction);
-                        levelMap.SetTile(new Vector3Int(13 - j, 15 - i, 0), tJunction); // right top
-                        levelMap.SetTile(new Vector3Int(13 - j, i - 13, 0), tJunction); // right bottom
-                        levelMap.SetTile(new Vector3Int(j - 14, i - 13, 0), tJunction); // left bottom
-                        Matrix4x4 matrixRightTop = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(0f, 180f, 0f), Vector3.one);
-                        levelMap.SetTransformMatrix(new Vector3Int(13 - j, 15 - i, 0), matrixRightTop);
-                        Matrix4x4 matrixRightBottom = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(180f, 0f, 0f), Vector3.one);
-                        levelMap.SetTransformMatrix(new Vector3Int(13 - j, i - 13, 0), matrixRightBottom);
-                        Matrix4x4 matrixLeftBottom = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(0f, 0f, 180f), Vector3.one);
-                        levelMap.SetTransformMatrix(new Vector3Int(j - 14, i - 13, 0), matrixLeftBottom);
+                        PlaceTJuntion(i, j);
                         break;
                 }
             }

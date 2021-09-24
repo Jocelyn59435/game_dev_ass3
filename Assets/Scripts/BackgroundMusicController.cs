@@ -7,6 +7,7 @@ public class BackgroundMusicController : MonoBehaviour
     private AudioSource[] clips;
     private AudioSource gameIntro;
     private AudioSource normalGhost;
+    private float passedTime;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,6 +21,12 @@ public class BackgroundMusicController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        // loop normal ghost clip
+        passedTime += Time.deltaTime;
+        if (passedTime >= normalGhost.clip.length && normalGhost.isPlaying != true)
+        {
+            normalGhost.Play();
+            passedTime = 0.0f;
+        }
     }
 }
